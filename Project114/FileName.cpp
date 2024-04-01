@@ -155,7 +155,7 @@ int main() {
 
     // Friday
     allSectionsTimetable.bse2a.friday.addSession({ "Calculus", "", "Room 4-18", "08:00", "08:45" });
-    allSectionsTimetable.bse2a.friday.addSession({ "Understanding of Quran – I", "", "", "12:30", "01:15" });
+    allSectionsTimetable.bse2a.friday.addSession({ "Understanding of Quran Â– I", "", "", "12:30", "01:15" });
 
 
 
@@ -382,7 +382,7 @@ int main() {
 
     //Friday
     timetable.addSession("Friday", { "Calculus", "", "4-18", "08:00", "08:45" });
-    timetable.addSession("Friday", { "Understanding of Quran – I", "", "", "12:30", "01:15" });
+    timetable.addSession("Friday", { "Understanding of Quran Â– I", "", "", "12:30", "01:15" });
     timetable.addSession("Friday", { "DS", "Engr. Sadaf", "4-17", "08:45", "10:15" });
     timetable.addSession("Friday", { "Understanding of Quran - I", "X", "X", "11:45", "12:30" });
     timetable.addSession("Friday", { "OS", "Engr. Aleem", "4-17", "10:15", "11:00" });
@@ -455,11 +455,7 @@ int main() {
     string name2, password2;
     bool registered = false;
 
-    ofstream myfile("xyz.txt", ios::app);
-    if (!myfile.is_open()) {
-        cout << "Error: Unable to open file." << endl;
-        return 1;
-    }
+    
 
     while (true) {
         cout << "Enter your choice..." << endl;
@@ -525,9 +521,17 @@ int main() {
                 if (hasUpper && hasLower && hasDigit && hasSpecialCharacter) {
                     cout << "Thank you for choosing Bahria!" << endl;
                     registered = true;
+                      // Write registration data to file
+                        ofstream regFile("registration.txt");
+                        if (regFile.is_open()) {
+                            regFile << name1 << endl;
+                            regFile << password1 << endl;
+                            regFile.close();
+                        } else {
+                            cout << "Unable to open file for registration." << endl;
+                        }
 
-                    // Write user information to the file
-                    myfile << "Name: " << name1 << ", Password: " << password1 << endl;
+                   
                 }
                 else {
                     cout << "Please follow the password instructions" << endl;
@@ -591,6 +595,19 @@ int main() {
             string dayToDisplay;
             cout << "Enter the day (Monday/Tuesday/Wednesday/Thursday/Friday): ";
             cin >> dayToDisplay;
+            // Read timetable from file and display
+                ifstream roomFile(roomNumberToDisplay + ".txt");
+                if (roomFile.is_open()) {
+                    string line;
+                    while (getline(roomFile, line)) {
+                        if (line.find(dayToDisplay) != string::npos) {
+                            cout << line << endl;
+                        }
+                    }
+                    roomFile.close();
+                } else {
+                    cout << "Unable to open file for room timetable." << endl;
+                }
             timetable.displaySessionsForRoomAndDay(roomNumberToDisplay, dayToDisplay);
             break;
         }
@@ -647,7 +664,6 @@ int main() {
         }
         case 8:
             cout << "Exiting..." << endl;
-            myfile.close();
             return 0;
         default:
             cout << "Invalid choice" << endl;
